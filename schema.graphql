@@ -1,0 +1,52 @@
+type collection @entity
+{id: ID!
+,name: String
+,dailyVolume: BigDecimal 
+,dailyTransactions: Int
+,weeklyVolume: BigDecimal
+,weeklyTransactions: Int
+,monthlyVolume: BigDecimal
+,monthlyTransactions: Int
+}
+
+type token @entity
+{id: ID!
+,identifier: Int
+,collectionId: Bytes
+,lastPrice: BigDecimal
+}
+
+type transfer @entity
+{id: ID!
+,collectionId: Bytes
+,tokenId: Int
+,blockNum: Int
+,senderAddress: Bytes
+,receiverAddress: Bytes
+,amount: BigDecimal
+,platform: String
+}
+
+type dailyCollectionSnapshot @entity
+{id: ID!
+,collectionId: Bytes
+,dailyVolume: BigDecimal
+,dailyTransactions: Int
+}
+
+
+type weeklyCollectionSnapshot @entity
+{id: ID!
+,collectionId: Bytes
+,weeklyVolume: BigDecimal
+,weeklyTransactions: Int
+}
+
+type monthlyCollectionSnapshot @entity
+{id: ID!
+,collectionId: Bytes
+,monthlyVolume: BigDecimal  
+,monthlyTransactions: Int
+}
+
+

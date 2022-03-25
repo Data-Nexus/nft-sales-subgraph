@@ -1,0 +1,27 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: LooksRare
+    network: mainnet
+    source:
+      address: "0x59728544B08AB483533076417FbBB2fD0B17CE3a"
+      abi: LooksRare
+      startBlock: 13885625
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - TakerAsk
+        - TakerBid
+      abis:
+        - name: LooksRare
+          file: ./abis/LooksRare.json
+      eventHandlers:
+        - event: TakerAsk(bytes32,uint256,indexed address,indexed address,indexed address,address,address,uint256,uint256,uint256)
+          handler: handleTakerAsk
+        - event: TakerBid(bytes32,uint256,indexed address,indexed address,indexed address,address,address,uint256,uint256,uint256)
+          handler: handleTakerBid
+      file: ./src/mapping.ts
