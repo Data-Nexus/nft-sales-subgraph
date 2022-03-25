@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: LooksRare
@@ -18,10 +18,12 @@ dataSources:
         - TakerBid
       abis:
         - name: LooksRare
-          file: ./abis/LooksRare.json
+          file: LooksRare\abis\LooksRare.json
       eventHandlers:
-        - event: TakerAsk(bytes32,uint256,indexed address,indexed address,indexed address,address,address,uint256,uint256,uint256)
+        - event: TakerAsk(bytes32,uint256,indexed address,indexed address,indexed
+            address,address,address,uint256,uint256,uint256)
           handler: handleTakerAsk
-        - event: TakerBid(bytes32,uint256,indexed address,indexed address,indexed address,address,address,uint256,uint256,uint256)
+        - event: TakerBid(bytes32,uint256,indexed address,indexed address,indexed
+            address,address,address,uint256,uint256,uint256)
           handler: handleTakerBid
-      file: ./src/LooksRareSale.ts
+      file: LooksRare\LooksRare.wasm

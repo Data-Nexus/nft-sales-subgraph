@@ -11,31 +11,31 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class ExampleEntity extends Entity {
+export class collection extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("count", Value.fromBigInt(BigInt.zero()));
-    this.set("user", Value.fromBytes(Bytes.empty()));
-    this.set("newMinNonce", Value.fromBigInt(BigInt.zero()));
+    this.set("dailyTransactions", Value.fromI32(0));
+    this.set("weeklyTransactions", Value.fromI32(0));
+    this.set("monthlyTransactions", Value.fromI32(0));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save ExampleEntity entity without an ID");
+    assert(id != null, "Cannot save collection entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save ExampleEntity entity with non-string ID. " +
+        "Cannot save collection entity with non-string ID. " +
           'Considering using .toHex() to convert the "id" to a string.'
       );
-      store.set("ExampleEntity", id.toString(), this);
+      store.set("collection", id.toString(), this);
     }
   }
 
-  static load(id: string): ExampleEntity | null {
-    return changetype<ExampleEntity | null>(store.get("ExampleEntity", id));
+  static load(id: string): collection | null {
+    return changetype<collection | null>(store.get("collection", id));
   }
 
   get id(): string {
@@ -47,30 +47,564 @@ export class ExampleEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get count(): BigInt {
-    let value = this.get("count");
-    return value!.toBigInt();
+  get name(): string | null {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set count(value: BigInt) {
-    this.set("count", Value.fromBigInt(value));
+  set name(value: string | null) {
+    if (!value) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(<string>value));
+    }
   }
 
-  get user(): Bytes {
-    let value = this.get("user");
-    return value!.toBytes();
+  get dailyVolume(): BigDecimal | null {
+    let value = this.get("dailyVolume");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
   }
 
-  set user(value: Bytes) {
-    this.set("user", Value.fromBytes(value));
+  set dailyVolume(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("dailyVolume");
+    } else {
+      this.set("dailyVolume", Value.fromBigDecimal(<BigDecimal>value));
+    }
   }
 
-  get newMinNonce(): BigInt {
-    let value = this.get("newMinNonce");
-    return value!.toBigInt();
+  get dailyTransactions(): i32 {
+    let value = this.get("dailyTransactions");
+    return value!.toI32();
   }
 
-  set newMinNonce(value: BigInt) {
-    this.set("newMinNonce", Value.fromBigInt(value));
+  set dailyTransactions(value: i32) {
+    this.set("dailyTransactions", Value.fromI32(value));
+  }
+
+  get weeklyVolume(): BigDecimal | null {
+    let value = this.get("weeklyVolume");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set weeklyVolume(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("weeklyVolume");
+    } else {
+      this.set("weeklyVolume", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get weeklyTransactions(): i32 {
+    let value = this.get("weeklyTransactions");
+    return value!.toI32();
+  }
+
+  set weeklyTransactions(value: i32) {
+    this.set("weeklyTransactions", Value.fromI32(value));
+  }
+
+  get monthlyVolume(): BigDecimal | null {
+    let value = this.get("monthlyVolume");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set monthlyVolume(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("monthlyVolume");
+    } else {
+      this.set("monthlyVolume", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get monthlyTransactions(): i32 {
+    let value = this.get("monthlyTransactions");
+    return value!.toI32();
+  }
+
+  set monthlyTransactions(value: i32) {
+    this.set("monthlyTransactions", Value.fromI32(value));
+  }
+}
+
+export class token extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("identifier", Value.fromI32(0));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save token entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save token entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("token", id.toString(), this);
+    }
+  }
+
+  static load(id: string): token | null {
+    return changetype<token | null>(store.get("token", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get identifier(): i32 {
+    let value = this.get("identifier");
+    return value!.toI32();
+  }
+
+  set identifier(value: i32) {
+    this.set("identifier", Value.fromI32(value));
+  }
+
+  get collectionId(): Bytes | null {
+    let value = this.get("collectionId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set collectionId(value: Bytes | null) {
+    if (!value) {
+      this.unset("collectionId");
+    } else {
+      this.set("collectionId", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get lastPrice(): BigDecimal | null {
+    let value = this.get("lastPrice");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set lastPrice(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("lastPrice");
+    } else {
+      this.set("lastPrice", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+}
+
+export class transfer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("tokenId", Value.fromI32(0));
+    this.set("blockNum", Value.fromI32(0));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save transfer entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save transfer entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("transfer", id.toString(), this);
+    }
+  }
+
+  static load(id: string): transfer | null {
+    return changetype<transfer | null>(store.get("transfer", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get collectionId(): Bytes | null {
+    let value = this.get("collectionId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set collectionId(value: Bytes | null) {
+    if (!value) {
+      this.unset("collectionId");
+    } else {
+      this.set("collectionId", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get tokenId(): i32 {
+    let value = this.get("tokenId");
+    return value!.toI32();
+  }
+
+  set tokenId(value: i32) {
+    this.set("tokenId", Value.fromI32(value));
+  }
+
+  get blockNum(): i32 {
+    let value = this.get("blockNum");
+    return value!.toI32();
+  }
+
+  set blockNum(value: i32) {
+    this.set("blockNum", Value.fromI32(value));
+  }
+
+  get senderAddress(): Bytes | null {
+    let value = this.get("senderAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set senderAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("senderAddress");
+    } else {
+      this.set("senderAddress", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get receiverAddress(): Bytes | null {
+    let value = this.get("receiverAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set receiverAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("receiverAddress");
+    } else {
+      this.set("receiverAddress", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get amount(): BigDecimal | null {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set amount(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("amount");
+    } else {
+      this.set("amount", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get platform(): string | null {
+    let value = this.get("platform");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set platform(value: string | null) {
+    if (!value) {
+      this.unset("platform");
+    } else {
+      this.set("platform", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class dailyCollectionSnapshot extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("dailyTransactions", Value.fromI32(0));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save dailyCollectionSnapshot entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save dailyCollectionSnapshot entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("dailyCollectionSnapshot", id.toString(), this);
+    }
+  }
+
+  static load(id: string): dailyCollectionSnapshot | null {
+    return changetype<dailyCollectionSnapshot | null>(
+      store.get("dailyCollectionSnapshot", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get collectionId(): Bytes | null {
+    let value = this.get("collectionId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set collectionId(value: Bytes | null) {
+    if (!value) {
+      this.unset("collectionId");
+    } else {
+      this.set("collectionId", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get dailyVolume(): BigDecimal | null {
+    let value = this.get("dailyVolume");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set dailyVolume(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("dailyVolume");
+    } else {
+      this.set("dailyVolume", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get dailyTransactions(): i32 {
+    let value = this.get("dailyTransactions");
+    return value!.toI32();
+  }
+
+  set dailyTransactions(value: i32) {
+    this.set("dailyTransactions", Value.fromI32(value));
+  }
+}
+
+export class weeklyCollectionSnapshot extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("weeklyTransactions", Value.fromI32(0));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save weeklyCollectionSnapshot entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save weeklyCollectionSnapshot entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("weeklyCollectionSnapshot", id.toString(), this);
+    }
+  }
+
+  static load(id: string): weeklyCollectionSnapshot | null {
+    return changetype<weeklyCollectionSnapshot | null>(
+      store.get("weeklyCollectionSnapshot", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get collectionId(): Bytes | null {
+    let value = this.get("collectionId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set collectionId(value: Bytes | null) {
+    if (!value) {
+      this.unset("collectionId");
+    } else {
+      this.set("collectionId", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get weeklyVolume(): BigDecimal | null {
+    let value = this.get("weeklyVolume");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set weeklyVolume(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("weeklyVolume");
+    } else {
+      this.set("weeklyVolume", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get weeklyTransactions(): i32 {
+    let value = this.get("weeklyTransactions");
+    return value!.toI32();
+  }
+
+  set weeklyTransactions(value: i32) {
+    this.set("weeklyTransactions", Value.fromI32(value));
+  }
+}
+
+export class monthlyCollectionSnapshot extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("monthlyTransactions", Value.fromI32(0));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save monthlyCollectionSnapshot entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save monthlyCollectionSnapshot entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("monthlyCollectionSnapshot", id.toString(), this);
+    }
+  }
+
+  static load(id: string): monthlyCollectionSnapshot | null {
+    return changetype<monthlyCollectionSnapshot | null>(
+      store.get("monthlyCollectionSnapshot", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get collectionId(): Bytes | null {
+    let value = this.get("collectionId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set collectionId(value: Bytes | null) {
+    if (!value) {
+      this.unset("collectionId");
+    } else {
+      this.set("collectionId", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get monthlyVolume(): BigDecimal | null {
+    let value = this.get("monthlyVolume");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set monthlyVolume(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("monthlyVolume");
+    } else {
+      this.set("monthlyVolume", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get monthlyTransactions(): i32 {
+    let value = this.get("monthlyTransactions");
+    return value!.toI32();
+  }
+
+  set monthlyTransactions(value: i32) {
+    this.set("monthlyTransactions", Value.fromI32(value));
   }
 }
