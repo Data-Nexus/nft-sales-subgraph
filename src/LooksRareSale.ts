@@ -72,17 +72,35 @@ import { transfer } from "../generated/schema"
 
 export function handleTakerAsk(event: TakerAsk): void {
 
+  let collectionEntity = collection.load(event.params.collection.toHex())
+
+  if (!collectionEntity) {
+      collectionEntity = new collection(event.params.collection.toHex())
+  
+      collectionEntity.id                         = event.params.collection.toHex()
+      collectionEntity.name                       = 'test'
+      //collectionEntity.dailyVolume                = 0
+      collectionEntity.dailyTransactions          = 0
+      //collectionEntity.weeklyVolume               = 0
+      collectionEntity.weeklyTransactions         = 0
+      //collectionEntity.monthlyVolume              = 0
+      collectionEntity.monthlyTransactions        = 0
+      
+    }
+
+  //check if transfer already exists
   let transferEntity = transfer.load(event.transaction.hash.toHex())
 
+  //if transfer has not yet been indexed
   if (!transferEntity) {
     transferEntity = new transfer(event.transaction.from.toHex())
     
     transferEntity.id = event.transaction.hash.toHex()
-    //transferEntity.collectionId = 
-    //transferEntity.tokenId = 'test'
+    transferEntity.collectionId = event.params.collection 
+    transferEntity.tokenId = event.params.tokenId
     transferEntity.blockNum = event.block.number.toI32()
-    transferEntity.senderAddress = event.transaction.from
-    transferEntity.receiverAddress = event.transaction.to   //event.transaction.to is the LR contract address not the token recipient
+    transferEntity.senderAddress = event.params.taker
+    transferEntity.receiverAddress = event.params.maker       
     transferEntity.amount = event.transaction.value.toBigDecimal()
     transferEntity.platform = 'LooksRare'
 
