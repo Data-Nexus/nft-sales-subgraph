@@ -1,6 +1,9 @@
 type collection @entity
 {id: ID!
 ,name: String
+,totalSales: Int
+,totalVolume: BigDecimal!
+,topSale: BigDecimal!
 ,dailyVolume: BigDecimal 
 ,dailyTransactions: Int
 ,weeklyVolume: BigDecimal
@@ -10,16 +13,17 @@ type collection @entity
 }
 
 type token @entity
-{id: ID!
-,identifier: Int
+{id: ID!  
+,identifier: BigInt
 ,collectionId: Bytes
-,lastPrice: BigDecimal
+,lastPrice: BigDecimal!
+,topSale: BigDecimal!
 }
 
 type transfer @entity
 {id: ID!
 ,collectionId: Bytes
-,tokenId: Int
+,tokenId: BigInt
 ,blockNum: Int
 ,senderAddress: Bytes
 ,receiverAddress: Bytes
