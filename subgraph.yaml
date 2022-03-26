@@ -22,6 +22,6 @@ dataSources:
       eventHandlers:
         - event: TakerAsk(bytes32,uint256,indexed address,indexed address,indexed address,address,address,uint256,uint256,uint256)
           handler: handleTakerAsk
-        - event: TakerBid(bytes32,uint256,indexed address,indexed address,indexed address,address,address,uint256,uint256,uint256)
-          handler: handleTakerBid
-      file: ./src/mapping.ts
+        #- event: TakerBid(bytes32,uint256,indexed address,indexed address,indexed address,address,address,uint256,uint256,uint256)
+        #  handler: handleTakerBid
+      file: ./src/LooksRareSale.ts
