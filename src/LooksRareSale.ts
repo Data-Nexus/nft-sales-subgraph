@@ -1,3 +1,4 @@
+import { bigInt } from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import {
   LooksRare,
@@ -74,23 +75,34 @@ export function handleTakerAsk(event: TakerAsk): void {
 
   let collectionEntity = collection.load(event.params.collection.toHex())
 
+  //if collection has not been indexed create it
   if (!collectionEntity) {
       collectionEntity = new collection(event.params.collection.toHex())
   
       collectionEntity.id                         = event.params.collection.toHex()
       collectionEntity.name                       = 'test'
+      collectionEntity.totalSales                 = 0
+      //collectionEntity.totalVolume              = 0
+      //collectionEntity.topSale                  = 0
       //collectionEntity.dailyVolume                = 0
       collectionEntity.dailyTransactions          = 0
       //collectionEntity.weeklyVolume               = 0
       collectionEntity.weeklyTransactions         = 0
       //collectionEntity.monthlyVolume              = 0
       collectionEntity.monthlyTransactions        = 0
-      
+    
+      collectionEntity.save()
     }
+  
+  //let tokenEntity = token.load(event.params.tokenId)
 
   //check if transfer already exists
   let transferEntity = transfer.load(event.transaction.hash.toHex())
-
+  
+  let transferAmount  = event.params.price.toBigDecimal()
+  //transferAmount / 1000000000000000000
+  
+    
   //if transfer has not yet been indexed
   if (!transferEntity) {
     transferEntity = new transfer(event.transaction.from.toHex())
@@ -101,12 +113,16 @@ export function handleTakerAsk(event: TakerAsk): void {
     transferEntity.blockNum = event.block.number.toI32()
     transferEntity.senderAddress = event.params.taker
     transferEntity.receiverAddress = event.params.maker       
-    transferEntity.amount = event.transaction.value.toBigDecimal()
+    transferEntity.amount = transferAmount
     transferEntity.platform = 'LooksRare'
 
   }
   
+  collectionEntity.totalSales = collectionEntity.totalSales + 1 
+
   transferEntity.save()
+  collectionEntity.save()
+
 
 }
 
