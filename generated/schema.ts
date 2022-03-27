@@ -19,9 +19,6 @@ export class collection extends Entity {
     this.set("totalSales", Value.fromI32(0));
     this.set("totalVolume", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
-    this.set("dailyTransactions", Value.fromI32(0));
-    this.set("weeklyTransactions", Value.fromI32(0));
-    this.set("monthlyTransactions", Value.fromI32(0));
   }
 
   save(): void {
@@ -94,82 +91,31 @@ export class collection extends Entity {
     this.set("topSale", Value.fromBigDecimal(value));
   }
 
-  get dailyVolume(): BigDecimal | null {
-    let value = this.get("dailyVolume");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
+  get dailyCollectionSnapshot(): Array<string> {
+    let value = this.get("dailyCollectionSnapshot");
+    return value!.toStringArray();
   }
 
-  set dailyVolume(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("dailyVolume");
-    } else {
-      this.set("dailyVolume", Value.fromBigDecimal(<BigDecimal>value));
-    }
+  set dailyCollectionSnapshot(value: Array<string>) {
+    this.set("dailyCollectionSnapshot", Value.fromStringArray(value));
   }
 
-  get dailyTransactions(): i32 {
-    let value = this.get("dailyTransactions");
-    return value!.toI32();
+  get weeklyCollectionSnapshot(): Array<string> {
+    let value = this.get("weeklyCollectionSnapshot");
+    return value!.toStringArray();
   }
 
-  set dailyTransactions(value: i32) {
-    this.set("dailyTransactions", Value.fromI32(value));
+  set weeklyCollectionSnapshot(value: Array<string>) {
+    this.set("weeklyCollectionSnapshot", Value.fromStringArray(value));
   }
 
-  get weeklyVolume(): BigDecimal | null {
-    let value = this.get("weeklyVolume");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
+  get monthlyCollectionSnapshot(): Array<string> {
+    let value = this.get("monthlyCollectionSnapshot");
+    return value!.toStringArray();
   }
 
-  set weeklyVolume(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("weeklyVolume");
-    } else {
-      this.set("weeklyVolume", Value.fromBigDecimal(<BigDecimal>value));
-    }
-  }
-
-  get weeklyTransactions(): i32 {
-    let value = this.get("weeklyTransactions");
-    return value!.toI32();
-  }
-
-  set weeklyTransactions(value: i32) {
-    this.set("weeklyTransactions", Value.fromI32(value));
-  }
-
-  get monthlyVolume(): BigDecimal | null {
-    let value = this.get("monthlyVolume");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
-  }
-
-  set monthlyVolume(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("monthlyVolume");
-    } else {
-      this.set("monthlyVolume", Value.fromBigDecimal(<BigDecimal>value));
-    }
-  }
-
-  get monthlyTransactions(): i32 {
-    let value = this.get("monthlyTransactions");
-    return value!.toI32();
-  }
-
-  set monthlyTransactions(value: i32) {
-    this.set("monthlyTransactions", Value.fromI32(value));
+  set monthlyCollectionSnapshot(value: Array<string>) {
+    this.set("monthlyCollectionSnapshot", Value.fromStringArray(value));
   }
 }
 
@@ -408,7 +354,9 @@ export class dailyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("date", Value.fromI32(0));
     this.set("collection", Value.fromString(""));
+    this.set("dailyVolume", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("dailyTransactions", Value.fromI32(0));
     this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("bottomSale", Value.fromBigDecimal(BigDecimal.zero()));
@@ -445,6 +393,15 @@ export class dailyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get date(): i32 {
+    let value = this.get("date");
+    return value!.toI32();
+  }
+
+  set date(value: i32) {
+    this.set("date", Value.fromI32(value));
+  }
+
   get collection(): string {
     let value = this.get("collection");
     return value!.toString();
@@ -454,21 +411,13 @@ export class dailyCollectionSnapshot extends Entity {
     this.set("collection", Value.fromString(value));
   }
 
-  get dailyVolume(): BigDecimal | null {
+  get dailyVolume(): BigDecimal {
     let value = this.get("dailyVolume");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
+    return value!.toBigDecimal();
   }
 
-  set dailyVolume(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("dailyVolume");
-    } else {
-      this.set("dailyVolume", Value.fromBigDecimal(<BigDecimal>value));
-    }
+  set dailyVolume(value: BigDecimal) {
+    this.set("dailyVolume", Value.fromBigDecimal(value));
   }
 
   get dailyTransactions(): i32 {
@@ -504,7 +453,9 @@ export class weeklyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("date", Value.fromI32(0));
     this.set("collection", Value.fromString(""));
+    this.set("weeklyVolume", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("weeklyTransactions", Value.fromI32(0));
     this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("bottomSale", Value.fromBigDecimal(BigDecimal.zero()));
@@ -541,6 +492,15 @@ export class weeklyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get date(): i32 {
+    let value = this.get("date");
+    return value!.toI32();
+  }
+
+  set date(value: i32) {
+    this.set("date", Value.fromI32(value));
+  }
+
   get collection(): string {
     let value = this.get("collection");
     return value!.toString();
@@ -550,21 +510,13 @@ export class weeklyCollectionSnapshot extends Entity {
     this.set("collection", Value.fromString(value));
   }
 
-  get weeklyVolume(): BigDecimal | null {
+  get weeklyVolume(): BigDecimal {
     let value = this.get("weeklyVolume");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
+    return value!.toBigDecimal();
   }
 
-  set weeklyVolume(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("weeklyVolume");
-    } else {
-      this.set("weeklyVolume", Value.fromBigDecimal(<BigDecimal>value));
-    }
+  set weeklyVolume(value: BigDecimal) {
+    this.set("weeklyVolume", Value.fromBigDecimal(value));
   }
 
   get weeklyTransactions(): i32 {
@@ -600,7 +552,9 @@ export class monthlyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("date", Value.fromI32(0));
     this.set("collection", Value.fromString(""));
+    this.set("monthlyVolume", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("monthlyTransactions", Value.fromI32(0));
     this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("bottomSale", Value.fromBigDecimal(BigDecimal.zero()));
@@ -637,6 +591,15 @@ export class monthlyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get date(): i32 {
+    let value = this.get("date");
+    return value!.toI32();
+  }
+
+  set date(value: i32) {
+    this.set("date", Value.fromI32(value));
+  }
+
   get collection(): string {
     let value = this.get("collection");
     return value!.toString();
@@ -646,21 +609,13 @@ export class monthlyCollectionSnapshot extends Entity {
     this.set("collection", Value.fromString(value));
   }
 
-  get monthlyVolume(): BigDecimal | null {
+  get monthlyVolume(): BigDecimal {
     let value = this.get("monthlyVolume");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
+    return value!.toBigDecimal();
   }
 
-  set monthlyVolume(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("monthlyVolume");
-    } else {
-      this.set("monthlyVolume", Value.fromBigDecimal(<BigDecimal>value));
-    }
+  set monthlyVolume(value: BigDecimal) {
+    this.set("monthlyVolume", Value.fromBigDecimal(value));
   }
 
   get monthlyTransactions(): i32 {

@@ -1,5 +1,4 @@
 import { BigDecimal } from "@graphprotocol/graph-ts"
-import { bigInt } from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import {
   LooksRare,
@@ -16,61 +15,17 @@ import {
   TakerBid,
   TakerAsk__Params
 } from "../generated/LooksRare/LooksRare"
-import { collection } from "../generated/schema"
-import { token } from "../generated/schema"
-import { transfer } from "../generated/schema"
 
 
-//export function handleCancelAllOrders(event: CancelAllOrders): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-//  let entity = ExampleEntity.load(event.transaction.from.toHex())
+import { 
+  collection,
+  token, 
+  transfer, 
+  dailyCollectionSnapshot, 
+  weeklyCollectionSnapshot, 
+  monthlyCollectionSnapshot
+ } from "../generated/schema"
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-//  if (!entity) {
-//    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-//    entity.count = BigInt.fromI32(0)
-//  }
-
-  // BigInt and BigDecimal math are supported
-//  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-//  entity.user = event.params.user
-//  entity.newMinNonce = event.params.newMinNonce
-
-  // Entities can be written to the store with `.save()`
-//  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.DOMAIN_SEPARATOR(...)
-  // - contract.WETH(...)
-  // - contract.currencyManager(...)
-  // - contract.executionManager(...)
-  // - contract.isUserOrderNonceExecutedOrCancelled(...)
-  // - contract.owner(...)
-  // - contract.protocolFeeRecipient(...)
-  // - contract.royaltyFeeManager(...)
-  // - contract.transferSelectorNFT(...)
-  // - contract.userMinOrderNonce(...)
-//}
 
 export function handleTakerAsk(event: TakerAsk): void {
 
@@ -89,12 +44,6 @@ export function handleTakerAsk(event: TakerAsk): void {
       collectionEntity.totalSales                 = 0
       collectionEntity.totalVolume                = BigDecimal.fromString('0')
       collectionEntity.topSale                    = BigDecimal.fromString('0')
-      collectionEntity.dailyVolume                = BigDecimal.fromString('0')
-      collectionEntity.dailyTransactions          = 0
-      collectionEntity.weeklyVolume               = BigDecimal.fromString('0')
-      collectionEntity.weeklyTransactions         = 0
-      collectionEntity.monthlyVolume              = BigDecimal.fromString('0')
-      collectionEntity.monthlyTransactions        = 0
     
       collectionEntity.save()
     }
@@ -132,7 +81,6 @@ export function handleTakerAsk(event: TakerAsk): void {
     transferEntity.receiverAddress                = event.params.maker       
     transferEntity.amount                         = transferAmount
     transferEntity.platform                       = 'LooksRare'
-
   }
   
   //Update collection metrics
@@ -141,6 +89,38 @@ export function handleTakerAsk(event: TakerAsk): void {
   if (transferAmount > collectionEntity.topSale) {
     collectionEntity.topSale = transferAmount
   }
+
+
+  // dailyCollectionSnapshot Entity
+  const day = event.block.timestamp.toI32() / 86400
+  const date = day * 86400
+  
+  let dailyCollectionSnapshotEntityId = event.params.collection.toString().concat('-').concat(BigInt.fromI32(day).toString())
+  
+  let dailyCollectionSnapshotEntity = dailyCollectionSnapshot.load(dailyCollectionSnapshotEntityId)
+
+  if(!dailyCollectionSnapshotEntity) {
+    dailyCollectionSnapshotEntity = new dailyCollectionSnapshot(event.params.collection.toString())
+    
+    dailyCollectionSnapshotEntity.id                 = dailyCollectionSnapshotEntityId
+    dailyCollectionSnapshotEntity.date               = date
+    dailyCollectionSnapshotEntity.collection         = event.params.collection.toHex()
+    dailyCollectionSnapshotEntity.dailyVolume        = BigDecimal.fromString('0')
+    dailyCollectionSnapshotEntity.dailyTransactions  = 0
+    dailyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
+    dailyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
+
+    dailyCollectionSnapshotEntity.save()
+  }
+
+  dailyCollectionSnapshotEntity.dailyVolume = dailyCollectionSnapshotEntity.dailyVolume.plus(transferAmount)
+  if (transferAmount > dailyCollectionSnapshotEntity.topSale) {
+    dailyCollectionSnapshotEntity.topSale = transferAmount
+  }
+  
+  dailyCollectionSnapshotEntity.dailyTransactions = dailyCollectionSnapshotEntity.dailyTransactions + 1
+
+
 
   //Update token metrics 
   tokenEntity.lastPrice = transferAmount
@@ -152,6 +132,7 @@ export function handleTakerAsk(event: TakerAsk): void {
   collectionEntity.save()
   tokenEntity.save()
   transferEntity.save()
+  dailyCollectionSnapshotEntity.save()
 
 }
 

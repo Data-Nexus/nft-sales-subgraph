@@ -4,12 +4,9 @@ type collection @entity
 ,totalSales: Int
 ,totalVolume: BigDecimal!
 ,topSale: BigDecimal!
-,dailyVolume: BigDecimal 
-,dailyTransactions: Int
-,weeklyVolume: BigDecimal
-,weeklyTransactions: Int
-,monthlyVolume: BigDecimal
-,monthlyTransactions: Int
+,dailyCollectionSnapshot: [dailyCollectionSnapshot!]! @derivedFrom(field: "collection") 
+,weeklyCollectionSnapshot: [weeklyCollectionSnapshot!]! @derivedFrom(field: "collection") 
+,monthlyCollectionSnapshot: [monthlyCollectionSnapshot!]! @derivedFrom(field: "collection") 
 }
 
 type token @entity
@@ -34,8 +31,9 @@ type transfer @entity
 
 type dailyCollectionSnapshot @entity
 {id: ID!
+,date: Int 
 ,collection: collection!
-,dailyVolume: BigDecimal
+,dailyVolume: BigDecimal!
 ,dailyTransactions: Int
 ,topSale: BigDecimal!
 ,bottomSale: BigDecimal!
@@ -44,8 +42,9 @@ type dailyCollectionSnapshot @entity
 
 type weeklyCollectionSnapshot @entity
 {id: ID!
+,date: Int!
 ,collection: collection!
-,weeklyVolume: BigDecimal
+,weeklyVolume: BigDecimal!
 ,weeklyTransactions: Int
 ,topSale: BigDecimal!
 ,bottomSale: BigDecimal!
@@ -53,8 +52,9 @@ type weeklyCollectionSnapshot @entity
 
 type monthlyCollectionSnapshot @entity
 {id: ID!
+,date: Int!
 ,collection: collection!
-,monthlyVolume: BigDecimal  
+,monthlyVolume: BigDecimal!
 ,monthlyTransactions: Int
 ,topSale: BigDecimal!
 ,bottomSale: BigDecimal!
