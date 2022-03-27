@@ -15,14 +15,14 @@ type collection @entity
 type token @entity
 {id: ID!  
 ,identifier: BigInt
-,collectionId: Bytes
+,collectionId: collection!
 ,lastPrice: BigDecimal!
 ,topSale: BigDecimal!
 }
 
 type transfer @entity
 {id: ID!
-,collectionId: Bytes
+,collectionId: collection!
 ,tokenId: BigInt
 ,blockNum: Int
 ,senderAddress: Bytes
@@ -33,24 +33,30 @@ type transfer @entity
 
 type dailyCollectionSnapshot @entity
 {id: ID!
-,collectionId: Bytes
+,collectionId: collection!
 ,dailyVolume: BigDecimal
 ,dailyTransactions: Int
+,topSale: BigDecimal!
+,bottomSale: BigDecimal!
 }
 
 
 type weeklyCollectionSnapshot @entity
 {id: ID!
-,collectionId: Bytes
+,collectionId: collection!
 ,weeklyVolume: BigDecimal
 ,weeklyTransactions: Int
+,topSale: BigDecimal!
+,bottomSale: BigDecimal!
 }
 
 type monthlyCollectionSnapshot @entity
 {id: ID!
-,collectionId: Bytes
+,collectionId: collection!
 ,monthlyVolume: BigDecimal  
 ,monthlyTransactions: Int
+,topSale: BigDecimal!
+,bottomSale: BigDecimal!
 }
 
 
