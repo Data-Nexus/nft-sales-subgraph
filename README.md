@@ -29,6 +29,10 @@ Step5 load and update and apply null check weeklySnapshot - if null create weekl
 
 Step6 load and update and apply null check monthlySnapshot - if null create monthlySnapshot 
 
+Opensea Transaction - 0xd5998f56b9f1d0308d572a4b15e4ef6348ebb26a7f37d88c82c20ada769bda39
+
+Opensea Bundle - 0x9b16c3448cf2c7db57169d2bda94add45c2cb12cd9c36d385ee86803d5e42964
+
 
 # LooksRare:
 Finish out TakerAsk:
