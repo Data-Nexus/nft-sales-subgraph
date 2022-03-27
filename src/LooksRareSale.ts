@@ -99,13 +99,13 @@ export function handleTakerAsk(event: TakerAsk): void {
       collectionEntity.save()
     }
   
-  let tokenEntity = token.load(event.params.tokenId.toString())
+  let tokenEntity = token.load((collectionEntity.id.toString() + '-' + event.params.tokenId.toString()))
   
   //if token has not been indexed create it
   if (!tokenEntity) {
     tokenEntity = new token(event.params.tokenId.toString())
 
-    tokenEntity.id                                = event.params.tokenId.toString() //need to make this 'collectionId-tokenId'
+    tokenEntity.id                                = (collectionEntity.id.toString() + '-' + event.params.tokenId.toString())
     tokenEntity.identifier                        = event.params.tokenId
     tokenEntity.collectionId                      = event.params.collection
     tokenEntity.lastPrice                         = BigDecimal.fromString('0')
