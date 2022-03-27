@@ -107,7 +107,7 @@ export function handleTakerAsk(event: TakerAsk): void {
 
     tokenEntity.id                                = (collectionEntity.id.toString() + '-' + event.params.tokenId.toString())
     tokenEntity.identifier                        = event.params.tokenId
-    tokenEntity.collectionId                      = event.params.collection
+    tokenEntity.collectionId                      = event.params.collection.toHex()
     tokenEntity.lastPrice                         = BigDecimal.fromString('0')
     tokenEntity.topSale                           = BigDecimal.fromString('0')
 
@@ -123,14 +123,14 @@ export function handleTakerAsk(event: TakerAsk): void {
 
     transferEntity = new transfer(event.transaction.from.toHex())
     
-    transferEntity.id = event.transaction.hash.toHex()
-    transferEntity.collectionId = event.params.collection 
-    transferEntity.tokenId = event.params.tokenId
-    transferEntity.blockNum = event.block.number.toI32()
-    transferEntity.senderAddress = event.params.taker
-    transferEntity.receiverAddress = event.params.maker       
-    transferEntity.amount = transferAmount
-    transferEntity.platform = 'LooksRare'
+    transferEntity.id                             = event.transaction.hash.toHex()
+    transferEntity.collectionId                   = event.params.collection.toHex()
+    transferEntity.tokenId                        = event.params.tokenId
+    transferEntity.blockNum                       = event.block.number.toI32()
+    transferEntity.senderAddress                  = event.params.taker
+    transferEntity.receiverAddress                = event.params.maker       
+    transferEntity.amount                         = transferAmount
+    transferEntity.platform                       = 'LooksRare'
 
   }
   
@@ -151,7 +151,6 @@ export function handleTakerAsk(event: TakerAsk): void {
   collectionEntity.save()
   tokenEntity.save()
   transferEntity.save()
-
 
 }
 
