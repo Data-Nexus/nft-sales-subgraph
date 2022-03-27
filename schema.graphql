@@ -1,6 +1,9 @@
 type collection @entity
 {id: ID!
 ,name: String
+,totalSales: Int
+,totalVolume: BigDecimal!
+,topSale: BigDecimal!
 ,dailyVolume: BigDecimal 
 ,dailyTransactions: Int
 ,weeklyVolume: BigDecimal
@@ -10,16 +13,18 @@ type collection @entity
 }
 
 type token @entity
-{id: ID!
-,identifier: Int
-,collectionId: Bytes
-,lastPrice: BigDecimal
+{id: ID!  
+,identifier: BigInt
+,collection: collection!
+,lastPrice: BigDecimal!
+,topSale: BigDecimal!
 }
 
 type transfer @entity
 {id: ID!
-,collectionId: Bytes
-,tokenId: Int
+,collection: collection!
+,token: token!
+,tokenId: BigInt
 ,blockNum: Int
 ,senderAddress: Bytes
 ,receiverAddress: Bytes
@@ -29,24 +34,30 @@ type transfer @entity
 
 type dailyCollectionSnapshot @entity
 {id: ID!
-,collectionId: Bytes
+,collection: collection!
 ,dailyVolume: BigDecimal
 ,dailyTransactions: Int
+,topSale: BigDecimal!
+,bottomSale: BigDecimal!
 }
 
 
 type weeklyCollectionSnapshot @entity
 {id: ID!
-,collectionId: Bytes
+,collection: collection!
 ,weeklyVolume: BigDecimal
 ,weeklyTransactions: Int
+,topSale: BigDecimal!
+,bottomSale: BigDecimal!
 }
 
 type monthlyCollectionSnapshot @entity
 {id: ID!
-,collectionId: Bytes
+,collection: collection!
 ,monthlyVolume: BigDecimal  
 ,monthlyTransactions: Int
+,topSale: BigDecimal!
+,bottomSale: BigDecimal!
 }
 
 

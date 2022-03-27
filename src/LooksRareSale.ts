@@ -1,3 +1,5 @@
+import { BigDecimal } from "@graphprotocol/graph-ts"
+import { bigInt } from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import {
   LooksRare,
@@ -72,28 +74,90 @@ import { transfer } from "../generated/schema"
 
 export function handleTakerAsk(event: TakerAsk): void {
 
-  let transferEntity = transfer.load(event.transaction.hash.toHex())
+  //declare and set variables
+  let transferAmount  = event.params.price.divDecimal(BigDecimal.fromString('1000000000000000000'))
 
+
+  let collectionEntity = collection.load(event.params.collection.toHex())
+
+  //if collection has not been indexed create it
+  if (!collectionEntity) {
+      collectionEntity = new collection(event.params.collection.toHex())
+  
+      collectionEntity.id                         = event.params.collection.toHex()
+      collectionEntity.name                       = 'test'
+      collectionEntity.totalSales                 = 0
+      collectionEntity.totalVolume                = BigDecimal.fromString('0')
+      collectionEntity.topSale                    = BigDecimal.fromString('0')
+      collectionEntity.dailyVolume                = BigDecimal.fromString('0')
+      collectionEntity.dailyTransactions          = 0
+      collectionEntity.weeklyVolume               = BigDecimal.fromString('0')
+      collectionEntity.weeklyTransactions         = 0
+      collectionEntity.monthlyVolume              = BigDecimal.fromString('0')
+      collectionEntity.monthlyTransactions        = 0
+    
+      collectionEntity.save()
+    }
+  
+  let tokenEntity = token.load((collectionEntity.id.toString() + '-' + event.params.tokenId.toString()))
+  
+  //if token has not been indexed create it
+  if (!tokenEntity) {
+    tokenEntity = new token(event.params.tokenId.toString())
+
+    tokenEntity.id                                = (collectionEntity.id.toString() + '-' + event.params.tokenId.toString())
+    tokenEntity.identifier                        = event.params.tokenId
+    tokenEntity.collection                        = event.params.collection.toHex()
+    tokenEntity.lastPrice                         = BigDecimal.fromString('0')
+    tokenEntity.topSale                           = BigDecimal.fromString('0')
+
+    tokenEntity.save()
+  }
+  
+
+  //check if transfer already exists
+  let transferEntity = transfer.load(event.transaction.hash.toHex())
+    
+  //if transfer has not yet been indexed
   if (!transferEntity) {
+
     transferEntity = new transfer(event.transaction.from.toHex())
     
-    transferEntity.id = event.transaction.hash.toHex()
-    //transferEntity.collectionId = 
-    //transferEntity.tokenId = 'test'
-    transferEntity.blockNum = event.block.number.toI32()
-    transferEntity.senderAddress = event.transaction.from
-    transferEntity.receiverAddress = event.transaction.to   //event.transaction.to is the LR contract address not the token recipient
-    transferEntity.amount = event.transaction.value.toBigDecimal()
-    transferEntity.platform = 'LooksRare'
+    transferEntity.id                             = event.transaction.hash.toHex()
+    transferEntity.collection                     = event.params.collection.toHex()
+    transferEntity.token                          = (collectionEntity.id.toString() + '-' + event.params.tokenId.toString()) //relates to token entity's id (collectionId-tokenId)
+    transferEntity.tokenId                        = event.params.tokenId                                                     //actual id of the token
+    transferEntity.blockNum                       = event.block.number.toI32()
+    transferEntity.senderAddress                  = event.params.taker
+    transferEntity.receiverAddress                = event.params.maker       
+    transferEntity.amount                         = transferAmount
+    transferEntity.platform                       = 'LooksRare'
 
   }
   
+  //Update collection metrics
+  collectionEntity.totalSales = collectionEntity.totalSales + 1 
+  collectionEntity.totalVolume = collectionEntity.totalVolume.plus(transferAmount)
+  if (transferAmount > collectionEntity.topSale) {
+    collectionEntity.topSale = transferAmount
+  }
+
+  //Update token metrics 
+  tokenEntity.lastPrice = transferAmount
+  if (transferAmount > tokenEntity.topSale) {
+    tokenEntity.topSale = transferAmount
+  }
+
+  //Save entities
+  collectionEntity.save()
+  tokenEntity.save()
   transferEntity.save()
 
 }
 
-export function handleTakerBid(event: TakerBid): void {
+///////////////////Bring back in once it's ready for TakerBids/////////////////////
+//export function handleTakerBid(event: TakerBid): void {
 
-  let entity = transfer.load(event.transaction.hash.toHex())
+//  let entity = transfer.load(event.transaction.hash.toHex())
 
-}
+//}

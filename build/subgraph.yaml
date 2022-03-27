@@ -23,7 +23,4 @@ dataSources:
         - event: TakerAsk(bytes32,uint256,indexed address,indexed address,indexed
             address,address,address,uint256,uint256,uint256)
           handler: handleTakerAsk
-        - event: TakerBid(bytes32,uint256,indexed address,indexed address,indexed
-            address,address,address,uint256,uint256,uint256)
-          handler: handleTakerBid
       file: LooksRare\LooksRare.wasm

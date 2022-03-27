@@ -16,6 +16,9 @@ export class collection extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("totalSales", Value.fromI32(0));
+    this.set("totalVolume", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("dailyTransactions", Value.fromI32(0));
     this.set("weeklyTransactions", Value.fromI32(0));
     this.set("monthlyTransactions", Value.fromI32(0));
@@ -62,6 +65,33 @@ export class collection extends Entity {
     } else {
       this.set("name", Value.fromString(<string>value));
     }
+  }
+
+  get totalSales(): i32 {
+    let value = this.get("totalSales");
+    return value!.toI32();
+  }
+
+  set totalSales(value: i32) {
+    this.set("totalSales", Value.fromI32(value));
+  }
+
+  get totalVolume(): BigDecimal {
+    let value = this.get("totalVolume");
+    return value!.toBigDecimal();
+  }
+
+  set totalVolume(value: BigDecimal) {
+    this.set("totalVolume", Value.fromBigDecimal(value));
+  }
+
+  get topSale(): BigDecimal {
+    let value = this.get("topSale");
+    return value!.toBigDecimal();
+  }
+
+  set topSale(value: BigDecimal) {
+    this.set("topSale", Value.fromBigDecimal(value));
   }
 
   get dailyVolume(): BigDecimal | null {
@@ -148,7 +178,9 @@ export class token extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("identifier", Value.fromI32(0));
+    this.set("collection", Value.fromString(""));
+    this.set("lastPrice", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
@@ -177,47 +209,48 @@ export class token extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get identifier(): i32 {
+  get identifier(): BigInt | null {
     let value = this.get("identifier");
-    return value!.toI32();
-  }
-
-  set identifier(value: i32) {
-    this.set("identifier", Value.fromI32(value));
-  }
-
-  get collectionId(): Bytes | null {
-    let value = this.get("collectionId");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toBigInt();
     }
   }
 
-  set collectionId(value: Bytes | null) {
+  set identifier(value: BigInt | null) {
     if (!value) {
-      this.unset("collectionId");
+      this.unset("identifier");
     } else {
-      this.set("collectionId", Value.fromBytes(<Bytes>value));
+      this.set("identifier", Value.fromBigInt(<BigInt>value));
     }
   }
 
-  get lastPrice(): BigDecimal | null {
+  get collection(): string {
+    let value = this.get("collection");
+    return value!.toString();
+  }
+
+  set collection(value: string) {
+    this.set("collection", Value.fromString(value));
+  }
+
+  get lastPrice(): BigDecimal {
     let value = this.get("lastPrice");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
+    return value!.toBigDecimal();
   }
 
-  set lastPrice(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("lastPrice");
-    } else {
-      this.set("lastPrice", Value.fromBigDecimal(<BigDecimal>value));
-    }
+  set lastPrice(value: BigDecimal) {
+    this.set("lastPrice", Value.fromBigDecimal(value));
+  }
+
+  get topSale(): BigDecimal {
+    let value = this.get("topSale");
+    return value!.toBigDecimal();
+  }
+
+  set topSale(value: BigDecimal) {
+    this.set("topSale", Value.fromBigDecimal(value));
   }
 }
 
@@ -226,7 +259,8 @@ export class transfer extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("tokenId", Value.fromI32(0));
+    this.set("collection", Value.fromString(""));
+    this.set("token", Value.fromString(""));
     this.set("blockNum", Value.fromI32(0));
   }
 
@@ -256,30 +290,39 @@ export class transfer extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get collectionId(): Bytes | null {
-    let value = this.get("collectionId");
+  get collection(): string {
+    let value = this.get("collection");
+    return value!.toString();
+  }
+
+  set collection(value: string) {
+    this.set("collection", Value.fromString(value));
+  }
+
+  get token(): string {
+    let value = this.get("token");
+    return value!.toString();
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
+  }
+
+  get tokenId(): BigInt | null {
+    let value = this.get("tokenId");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toBigInt();
     }
   }
 
-  set collectionId(value: Bytes | null) {
+  set tokenId(value: BigInt | null) {
     if (!value) {
-      this.unset("collectionId");
+      this.unset("tokenId");
     } else {
-      this.set("collectionId", Value.fromBytes(<Bytes>value));
+      this.set("tokenId", Value.fromBigInt(<BigInt>value));
     }
-  }
-
-  get tokenId(): i32 {
-    let value = this.get("tokenId");
-    return value!.toI32();
-  }
-
-  set tokenId(value: i32) {
-    this.set("tokenId", Value.fromI32(value));
   }
 
   get blockNum(): i32 {
@@ -365,7 +408,10 @@ export class dailyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("collection", Value.fromString(""));
     this.set("dailyTransactions", Value.fromI32(0));
+    this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("bottomSale", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
@@ -399,21 +445,13 @@ export class dailyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get collectionId(): Bytes | null {
-    let value = this.get("collectionId");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+  get collection(): string {
+    let value = this.get("collection");
+    return value!.toString();
   }
 
-  set collectionId(value: Bytes | null) {
-    if (!value) {
-      this.unset("collectionId");
-    } else {
-      this.set("collectionId", Value.fromBytes(<Bytes>value));
-    }
+  set collection(value: string) {
+    this.set("collection", Value.fromString(value));
   }
 
   get dailyVolume(): BigDecimal | null {
@@ -441,6 +479,24 @@ export class dailyCollectionSnapshot extends Entity {
   set dailyTransactions(value: i32) {
     this.set("dailyTransactions", Value.fromI32(value));
   }
+
+  get topSale(): BigDecimal {
+    let value = this.get("topSale");
+    return value!.toBigDecimal();
+  }
+
+  set topSale(value: BigDecimal) {
+    this.set("topSale", Value.fromBigDecimal(value));
+  }
+
+  get bottomSale(): BigDecimal {
+    let value = this.get("bottomSale");
+    return value!.toBigDecimal();
+  }
+
+  set bottomSale(value: BigDecimal) {
+    this.set("bottomSale", Value.fromBigDecimal(value));
+  }
 }
 
 export class weeklyCollectionSnapshot extends Entity {
@@ -448,7 +504,10 @@ export class weeklyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("collection", Value.fromString(""));
     this.set("weeklyTransactions", Value.fromI32(0));
+    this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("bottomSale", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
@@ -482,21 +541,13 @@ export class weeklyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get collectionId(): Bytes | null {
-    let value = this.get("collectionId");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+  get collection(): string {
+    let value = this.get("collection");
+    return value!.toString();
   }
 
-  set collectionId(value: Bytes | null) {
-    if (!value) {
-      this.unset("collectionId");
-    } else {
-      this.set("collectionId", Value.fromBytes(<Bytes>value));
-    }
+  set collection(value: string) {
+    this.set("collection", Value.fromString(value));
   }
 
   get weeklyVolume(): BigDecimal | null {
@@ -524,6 +575,24 @@ export class weeklyCollectionSnapshot extends Entity {
   set weeklyTransactions(value: i32) {
     this.set("weeklyTransactions", Value.fromI32(value));
   }
+
+  get topSale(): BigDecimal {
+    let value = this.get("topSale");
+    return value!.toBigDecimal();
+  }
+
+  set topSale(value: BigDecimal) {
+    this.set("topSale", Value.fromBigDecimal(value));
+  }
+
+  get bottomSale(): BigDecimal {
+    let value = this.get("bottomSale");
+    return value!.toBigDecimal();
+  }
+
+  set bottomSale(value: BigDecimal) {
+    this.set("bottomSale", Value.fromBigDecimal(value));
+  }
 }
 
 export class monthlyCollectionSnapshot extends Entity {
@@ -531,7 +600,10 @@ export class monthlyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("collection", Value.fromString(""));
     this.set("monthlyTransactions", Value.fromI32(0));
+    this.set("topSale", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("bottomSale", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
@@ -565,21 +637,13 @@ export class monthlyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get collectionId(): Bytes | null {
-    let value = this.get("collectionId");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+  get collection(): string {
+    let value = this.get("collection");
+    return value!.toString();
   }
 
-  set collectionId(value: Bytes | null) {
-    if (!value) {
-      this.unset("collectionId");
-    } else {
-      this.set("collectionId", Value.fromBytes(<Bytes>value));
-    }
+  set collection(value: string) {
+    this.set("collection", Value.fromString(value));
   }
 
   get monthlyVolume(): BigDecimal | null {
@@ -606,5 +670,23 @@ export class monthlyCollectionSnapshot extends Entity {
 
   set monthlyTransactions(value: i32) {
     this.set("monthlyTransactions", Value.fromI32(value));
+  }
+
+  get topSale(): BigDecimal {
+    let value = this.get("topSale");
+    return value!.toBigDecimal();
+  }
+
+  set topSale(value: BigDecimal) {
+    this.set("topSale", Value.fromBigDecimal(value));
+  }
+
+  get bottomSale(): BigDecimal {
+    let value = this.get("bottomSale");
+    return value!.toBigDecimal();
+  }
+
+  set bottomSale(value: BigDecimal) {
+    this.set("bottomSale", Value.fromBigDecimal(value));
   }
 }
