@@ -94,7 +94,10 @@ export function handleTakerAsk(event: TakerAsk): void {
   // dailyCollectionSnapshot Entity
   const day = event.block.timestamp.toI32() / 86400
   const date = day * 86400
-  
+
+  //This is i64 = 9223372036854775807
+  const max = BigDecimal.fromString(i64.MAX_VALUE.toString())
+
   let dailyCollectionSnapshotEntityId = event.params.collection.toHex() + '-' + day.toString()
   
   let dailyCollectionSnapshotEntity = dailyCollectionSnapshot.load(dailyCollectionSnapshotEntityId)
@@ -108,17 +111,23 @@ export function handleTakerAsk(event: TakerAsk): void {
     dailyCollectionSnapshotEntity.dailyVolume        = BigDecimal.fromString('0')
     dailyCollectionSnapshotEntity.dailyTransactions  = 0
     dailyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
-    dailyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
+    dailyCollectionSnapshotEntity.bottomSale         = max
 
     dailyCollectionSnapshotEntity.save()
   }
-
+  //dailyVolume & DailytopSale
   dailyCollectionSnapshotEntity.dailyVolume = dailyCollectionSnapshotEntity.dailyVolume.plus(transferAmount)
   if (transferAmount > dailyCollectionSnapshotEntity.topSale) {
     dailyCollectionSnapshotEntity.topSale = transferAmount
   }
-  
+
+  // dailyTransactions
   dailyCollectionSnapshotEntity.dailyTransactions = dailyCollectionSnapshotEntity.dailyTransactions + 1
+
+  //bottomSale
+  if (transferAmount < dailyCollectionSnapshotEntity.bottomSale) {
+    dailyCollectionSnapshotEntity.bottomSale = transferAmount
+  }
 
   //Update token metrics 
   tokenEntity.lastPrice = transferAmount
