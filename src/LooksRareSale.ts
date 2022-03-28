@@ -90,7 +90,12 @@ export function handleTakerAsk(event: TakerAsk): void {
     collectionEntity.topSale = transferAmount
   }
 
-
+  //Update token metrics 
+  tokenEntity.lastPrice = transferAmount
+  if (transferAmount > tokenEntity.topSale) {
+    tokenEntity.topSale = transferAmount
+  }
+  
   // dailyCollectionSnapshot Entity
   const day = event.block.timestamp.toI32() / 86400
   const date = day * 86400
@@ -129,17 +134,81 @@ export function handleTakerAsk(event: TakerAsk): void {
     dailyCollectionSnapshotEntity.bottomSale = transferAmount
   }
 
-  //Update token metrics 
-  tokenEntity.lastPrice = transferAmount
-  if (transferAmount > tokenEntity.topSale) {
-    tokenEntity.topSale = transferAmount
-  }
+  // weeklyCollectionSnapshot Entity
+  const week = event.block.timestamp.toI32() / 604800
+
+  let weeklyCollectionSnapshotEntityId = event.params.collection.toHex() + '-' + week.toString()
+    
+  let weeklyCollectionSnapshotEntity = weeklyCollectionSnapshot.load(weeklyCollectionSnapshotEntityId)
+
+  if(!weeklyCollectionSnapshotEntity) {
+      weeklyCollectionSnapshotEntity = new weeklyCollectionSnapshot(event.params.collection.toString())
+      
+      weeklyCollectionSnapshotEntity.id                 = weeklyCollectionSnapshotEntityId
+      weeklyCollectionSnapshotEntity.timestamp          = date
+      weeklyCollectionSnapshotEntity.collection         = event.params.collection.toHex()
+      weeklyCollectionSnapshotEntity.weeklyVolume        = BigDecimal.fromString('0')
+      weeklyCollectionSnapshotEntity.weeklyTransactions  = 0
+      weeklyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
+      weeklyCollectionSnapshotEntity.bottomSale         = max
+
+      weeklyCollectionSnapshotEntity.save()
+    }
+  //weeklyVolume & weeklyTopSale
+  weeklyCollectionSnapshotEntity.weeklyVolume = weeklyCollectionSnapshotEntity.weeklyVolume.plus(transferAmount)
+  if (transferAmount > weeklyCollectionSnapshotEntity.topSale) {
+    weeklyCollectionSnapshotEntity.topSale = transferAmount
+    }
+
+  //weeklyTransactions
+  weeklyCollectionSnapshotEntity.weeklyTransactions = weeklyCollectionSnapshotEntity.weeklyTransactions + 1
+
+  //weeklyBottomSale
+  if (transferAmount < weeklyCollectionSnapshotEntity.bottomSale) {
+    weeklyCollectionSnapshotEntity.bottomSale = transferAmount
+    }
+
+  //monthlyCollectionSnapshot Entity
+  const month = event.block.timestamp.toI32() / 2628288
+
+  let monthlyCollectionSnapshotEntityId = event.params.collection.toHex() + '-' + month.toString()
+      
+  let monthlyCollectionSnapshotEntity = monthlyCollectionSnapshot.load(monthlyCollectionSnapshotEntityId)
+  
+  if(!monthlyCollectionSnapshotEntity) {
+      monthlyCollectionSnapshotEntity = new monthlyCollectionSnapshot(event.params.collection.toString())
+        
+      monthlyCollectionSnapshotEntity.id                 = monthlyCollectionSnapshotEntityId
+      monthlyCollectionSnapshotEntity.timestamp          = date
+      monthlyCollectionSnapshotEntity.collection         = event.params.collection.toHex()
+      monthlyCollectionSnapshotEntity.monthlyVolume        = BigDecimal.fromString('0')
+      monthlyCollectionSnapshotEntity.monthlyTransactions  = 0
+      monthlyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
+      monthlyCollectionSnapshotEntity.bottomSale         = max
+  
+      monthlyCollectionSnapshotEntity.save()
+    }
+  //monthlyVolume & monthlyTopSale
+  monthlyCollectionSnapshotEntity.monthlyVolume = monthlyCollectionSnapshotEntity.monthlyVolume.plus(transferAmount)
+  if (transferAmount > monthlyCollectionSnapshotEntity.topSale) {
+    monthlyCollectionSnapshotEntity.topSale = transferAmount
+    }
+
+  //monthlyTransactions
+  monthlyCollectionSnapshotEntity.monthlyTransactions = monthlyCollectionSnapshotEntity.monthlyTransactions + 1
+  
+  //monthlyBottomSale
+  if (transferAmount < monthlyCollectionSnapshotEntity.bottomSale) {
+    monthlyCollectionSnapshotEntity.bottomSale = transferAmount
+    }
 
   //Save entities
   collectionEntity.save()
   tokenEntity.save()
   transferEntity.save()
   dailyCollectionSnapshotEntity.save()
+  weeklyCollectionSnapshotEntity.save()
+  monthlyCollectionSnapshotEntity.save()
 
 }
 
