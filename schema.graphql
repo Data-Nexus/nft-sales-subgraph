@@ -31,7 +31,7 @@ type transfer @entity
 
 type dailyCollectionSnapshot @entity
 {id: ID!
-,date: Int 
+,timestamp: Int
 ,collection: collection!
 ,dailyVolume: BigDecimal!
 ,dailyTransactions: Int
@@ -42,9 +42,9 @@ type dailyCollectionSnapshot @entity
 
 type weeklyCollectionSnapshot @entity
 {id: ID!
-,date: Int!
+,timestamp: Int!
 ,collection: collection!
-,weeklyVolume: BigDecimal!
+,weeklyVolume: BigDecimal
 ,weeklyTransactions: Int
 ,topSale: BigDecimal!
 ,bottomSale: BigDecimal!
@@ -52,12 +52,10 @@ type weeklyCollectionSnapshot @entity
 
 type monthlyCollectionSnapshot @entity
 {id: ID!
-,date: Int!
+,timestamp: Int!
 ,collection: collection!
-,monthlyVolume: BigDecimal!
+,monthlyVolume: BigDecimal  
 ,monthlyTransactions: Int
 ,topSale: BigDecimal!
 ,bottomSale: BigDecimal!
 }
-
-

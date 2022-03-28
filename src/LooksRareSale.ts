@@ -95,7 +95,7 @@ export function handleTakerAsk(event: TakerAsk): void {
   const day = event.block.timestamp.toI32() / 86400
   const date = day * 86400
   
-  let dailyCollectionSnapshotEntityId = event.params.collection.toString().concat('-').concat(BigInt.fromI32(day).toString())
+  let dailyCollectionSnapshotEntityId = event.params.collection.toHex() + '-' + day.toString()
   
   let dailyCollectionSnapshotEntity = dailyCollectionSnapshot.load(dailyCollectionSnapshotEntityId)
 
@@ -103,7 +103,7 @@ export function handleTakerAsk(event: TakerAsk): void {
     dailyCollectionSnapshotEntity = new dailyCollectionSnapshot(event.params.collection.toString())
     
     dailyCollectionSnapshotEntity.id                 = dailyCollectionSnapshotEntityId
-    dailyCollectionSnapshotEntity.date               = date
+    dailyCollectionSnapshotEntity.timestamp          = date
     dailyCollectionSnapshotEntity.collection         = event.params.collection.toHex()
     dailyCollectionSnapshotEntity.dailyVolume        = BigDecimal.fromString('0')
     dailyCollectionSnapshotEntity.dailyTransactions  = 0
@@ -119,8 +119,6 @@ export function handleTakerAsk(event: TakerAsk): void {
   }
   
   dailyCollectionSnapshotEntity.dailyTransactions = dailyCollectionSnapshotEntity.dailyTransactions + 1
-
-
 
   //Update token metrics 
   tokenEntity.lastPrice = transferAmount
