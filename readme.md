@@ -66,3 +66,6 @@ TakerAsk - 0xf76051068ae86d602265feeb835677cff7105a718d010de6fd412e57dec87af4
 
 Name desired metrics for Daily, Weekly and Monthly snapshot entities (currently in the fields for # of transactions & total volume. From this you can derive average price. 
 
+
+gem.xyz multicontract transaction: 0x692af20c5e84c896984034d8636da698e40fae72e973fc090fc46ad0dda06f52
+
