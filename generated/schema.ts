@@ -354,7 +354,7 @@ export class dailyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("date", Value.fromI32(0));
+    this.set("timestamp", Value.fromI32(0));
     this.set("collection", Value.fromString(""));
     this.set("dailyVolume", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("dailyTransactions", Value.fromI32(0));
@@ -393,13 +393,13 @@ export class dailyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get date(): i32 {
-    let value = this.get("date");
+  get timestamp(): i32 {
+    let value = this.get("timestamp");
     return value!.toI32();
   }
 
-  set date(value: i32) {
-    this.set("date", Value.fromI32(value));
+  set timestamp(value: i32) {
+    this.set("timestamp", Value.fromI32(value));
   }
 
   get collection(): string {
@@ -453,7 +453,7 @@ export class weeklyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("date", Value.fromI32(0));
+    this.set("timestamp", Value.fromI32(0));
     this.set("collection", Value.fromString(""));
     this.set("weeklyVolume", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("weeklyTransactions", Value.fromI32(0));
@@ -492,13 +492,13 @@ export class weeklyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get date(): i32 {
-    let value = this.get("date");
+  get timestamp(): i32 {
+    let value = this.get("timestamp");
     return value!.toI32();
   }
 
-  set date(value: i32) {
-    this.set("date", Value.fromI32(value));
+  set timestamp(value: i32) {
+    this.set("timestamp", Value.fromI32(value));
   }
 
   get collection(): string {
@@ -552,7 +552,7 @@ export class monthlyCollectionSnapshot extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("date", Value.fromI32(0));
+    this.set("timestamp", Value.fromI32(0));
     this.set("collection", Value.fromString(""));
     this.set("monthlyVolume", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("monthlyTransactions", Value.fromI32(0));
@@ -591,13 +591,13 @@ export class monthlyCollectionSnapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get date(): i32 {
-    let value = this.get("date");
+  get timestamp(): i32 {
+    let value = this.get("timestamp");
     return value!.toI32();
   }
 
-  set date(value: i32) {
-    this.set("date", Value.fromI32(value));
+  set timestamp(value: i32) {
+    this.set("timestamp", Value.fromI32(value));
   }
 
   get collection(): string {

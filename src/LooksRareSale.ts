@@ -103,9 +103,6 @@ export function handleTakerAsk(event: TakerAsk): void {
   // The actuall timestamp
   const date = event.block.timestamp.toI32()
 
-  // This is i64 = 9223372036854775807
-  const max = BigDecimal.fromString(i64.MAX_VALUE.toString())
-
   // Collection Address - Day
   let dailyCollectionSnapshotEntityId = event.params.collection.toHex() + '-' + day.toString()
   
@@ -120,7 +117,7 @@ export function handleTakerAsk(event: TakerAsk): void {
     dailyCollectionSnapshotEntity.dailyVolume        = BigDecimal.fromString('0')
     dailyCollectionSnapshotEntity.dailyTransactions  = 0
     dailyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
-    dailyCollectionSnapshotEntity.bottomSale         = max
+    dailyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
 
     dailyCollectionSnapshotEntity.save()
   }
@@ -135,7 +132,9 @@ export function handleTakerAsk(event: TakerAsk): void {
   dailyCollectionSnapshotEntity.dailyTransactions = dailyCollectionSnapshotEntity.dailyTransactions + 1
 
   // Daily bottom sale
-  if (transferAmount < dailyCollectionSnapshotEntity.bottomSale) {
+  if (transferAmount < dailyCollectionSnapshotEntity.bottomSale 
+      || (dailyCollectionSnapshotEntity.bottomSale == BigDecimal.fromString('0') && transferAmount != BigDecimal.fromString('0'))
+      ) {
     dailyCollectionSnapshotEntity.bottomSale = transferAmount
   }
 
@@ -160,7 +159,7 @@ export function handleTakerAsk(event: TakerAsk): void {
       weeklyCollectionSnapshotEntity.weeklyVolume        = BigDecimal.fromString('0')
       weeklyCollectionSnapshotEntity.weeklyTransactions  = 0
       weeklyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
-      weeklyCollectionSnapshotEntity.bottomSale         = max
+      weeklyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
 
       weeklyCollectionSnapshotEntity.save()
     }
@@ -175,7 +174,9 @@ export function handleTakerAsk(event: TakerAsk): void {
   weeklyCollectionSnapshotEntity.weeklyTransactions = weeklyCollectionSnapshotEntity.weeklyTransactions + 1
 
   // Weekly bottom sale
-  if (transferAmount < weeklyCollectionSnapshotEntity.bottomSale) {
+  if (transferAmount < weeklyCollectionSnapshotEntity.bottomSale
+    || (weeklyCollectionSnapshotEntity.bottomSale == BigDecimal.fromString('0') && transferAmount != BigDecimal.fromString('0'))
+      ) {
     weeklyCollectionSnapshotEntity.bottomSale = transferAmount
     }
   
@@ -200,7 +201,7 @@ export function handleTakerAsk(event: TakerAsk): void {
       monthlyCollectionSnapshotEntity.monthlyVolume        = BigDecimal.fromString('0')
       monthlyCollectionSnapshotEntity.monthlyTransactions  = 0
       monthlyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
-      monthlyCollectionSnapshotEntity.bottomSale         = max
+      monthlyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
   
       monthlyCollectionSnapshotEntity.save()
     }
@@ -214,7 +215,9 @@ export function handleTakerAsk(event: TakerAsk): void {
   monthlyCollectionSnapshotEntity.monthlyTransactions = monthlyCollectionSnapshotEntity.monthlyTransactions + 1
   
   // Monthly bottom sale
-  if (transferAmount < monthlyCollectionSnapshotEntity.bottomSale) {
+  if (transferAmount < monthlyCollectionSnapshotEntity.bottomSale
+    || (monthlyCollectionSnapshotEntity.bottomSale == BigDecimal.fromString('0') && transferAmount != BigDecimal.fromString('0'))
+      ) {
     monthlyCollectionSnapshotEntity.bottomSale = transferAmount
     }
 
@@ -320,9 +323,6 @@ export function handleTakerBid(event: TakerBid): void {
   // The actuall timestamp
   const date = event.block.timestamp.toI32()
 
-  // This is i64 = 9223372036854775807
-  const max = BigDecimal.fromString(i64.MAX_VALUE.toString())
-
   // Collection Address - Day
   let dailyCollectionSnapshotEntityId = event.params.collection.toHex() + '-' + day.toString()
   
@@ -337,7 +337,7 @@ export function handleTakerBid(event: TakerBid): void {
     dailyCollectionSnapshotEntity.dailyVolume        = BigDecimal.fromString('0')
     dailyCollectionSnapshotEntity.dailyTransactions  = 0
     dailyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
-    dailyCollectionSnapshotEntity.bottomSale         = max
+    dailyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
 
     dailyCollectionSnapshotEntity.save()
   }
@@ -352,7 +352,9 @@ export function handleTakerBid(event: TakerBid): void {
   dailyCollectionSnapshotEntity.dailyTransactions = dailyCollectionSnapshotEntity.dailyTransactions + 1
 
   // Daily bottom sale
-  if (transferAmount < dailyCollectionSnapshotEntity.bottomSale) {
+  if (transferAmount < dailyCollectionSnapshotEntity.bottomSale
+    || (dailyCollectionSnapshotEntity.bottomSale == BigDecimal.fromString('0') && transferAmount != BigDecimal.fromString('0'))
+      ) {
     dailyCollectionSnapshotEntity.bottomSale = transferAmount
   }
 
@@ -377,7 +379,7 @@ export function handleTakerBid(event: TakerBid): void {
       weeklyCollectionSnapshotEntity.weeklyVolume        = BigDecimal.fromString('0')
       weeklyCollectionSnapshotEntity.weeklyTransactions  = 0
       weeklyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
-      weeklyCollectionSnapshotEntity.bottomSale         = max
+      weeklyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
 
       weeklyCollectionSnapshotEntity.save()
     }
@@ -392,7 +394,9 @@ export function handleTakerBid(event: TakerBid): void {
   weeklyCollectionSnapshotEntity.weeklyTransactions = weeklyCollectionSnapshotEntity.weeklyTransactions + 1
 
   // Weekly bottom sale
-  if (transferAmount < weeklyCollectionSnapshotEntity.bottomSale) {
+  if (transferAmount < weeklyCollectionSnapshotEntity.bottomSale
+    || (weeklyCollectionSnapshotEntity.bottomSale == BigDecimal.fromString('0') && transferAmount != BigDecimal.fromString('0'))
+      ) {
     weeklyCollectionSnapshotEntity.bottomSale = transferAmount
     }
   
@@ -417,7 +421,7 @@ export function handleTakerBid(event: TakerBid): void {
       monthlyCollectionSnapshotEntity.monthlyVolume        = BigDecimal.fromString('0')
       monthlyCollectionSnapshotEntity.monthlyTransactions  = 0
       monthlyCollectionSnapshotEntity.topSale            = BigDecimal.fromString('0')
-      monthlyCollectionSnapshotEntity.bottomSale         = max
+      monthlyCollectionSnapshotEntity.bottomSale         = BigDecimal.fromString('0')
   
       monthlyCollectionSnapshotEntity.save()
     }
@@ -431,7 +435,9 @@ export function handleTakerBid(event: TakerBid): void {
   monthlyCollectionSnapshotEntity.monthlyTransactions = monthlyCollectionSnapshotEntity.monthlyTransactions + 1
   
   // Monthly bottom sale
-  if (transferAmount < monthlyCollectionSnapshotEntity.bottomSale) {
+  if (transferAmount < monthlyCollectionSnapshotEntity.bottomSale
+    || (monthlyCollectionSnapshotEntity.bottomSale == BigDecimal.fromString('0') && transferAmount != BigDecimal.fromString('0'))
+      ) {
     monthlyCollectionSnapshotEntity.bottomSale = transferAmount
     }
 
